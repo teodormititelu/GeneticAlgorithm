@@ -1,5 +1,6 @@
 import random
 import math
+import numpy
 
 f = open('Input.txt', 'r')
 g = open('Evolutie.txt', 'w')
@@ -62,8 +63,9 @@ def selection( generation ):
         g.write( ' '.join( map(str, probSelIntervals) ) + '\n\n')
 
     newPopulation = []
+    randList = numpy.random.uniform( 0, 1, populationSize )
     for i in range(populationSize):
-        u = random.random()
+        u = randList[i]
         chrIndex = upper_bound( probSelIntervals, 0, populationSize-1, u)
         newPopulation.append( population[chrIndex] )
         if generation == 1:
@@ -77,8 +79,10 @@ def crossover( population, generation = None):
         g.write('\nProbabilitate de recombinare pentru fiecare gena ' + str(crossoverRate) + '\n')
 
     crossoverList = []
+    
+    randList = numpy.random.uniform( 0, 1, populationSize )
     for i in range(populationSize):
-        u = random.random()
+        u = randList[i]
         if u <= crossoverRate:
             crossoverList.append( (population[i], i) )
 
@@ -92,7 +96,7 @@ def crossover( population, generation = None):
         secondIndex = crossoverList[i+1][1]
         secondChr = crossoverList[i+1][0]
 
-        u = random.randint(0, chromosomeLength-1)
+        u = numpy.random.randint(0, chromosomeLength)
         newChr1 = firstChr[:u] + secondChr[u:]
         newChr2 = secondChr[:u] + secondChr[u:]
 
@@ -109,9 +113,10 @@ def mutation( population, generation = None):
 
     modified = []
 
+    randList = numpy.random.uniform( 0, 1, populationSize*chromosomeLength )
     for i in range( populationSize ):
         for j in range( chromosomeLength ):
-            u = random.random()
+            u = randList[i*j]
             if u <= mutationRate:
                 population[i][j] = population[i][j] ^ 1
                 modified.append( i+1 )
@@ -167,7 +172,3 @@ for generation in range( 1, generations+1 ):
         g.write( '\nEvolutia maximului\n' )
 
     g.write( str(max( fitnesses )) + '\n')
-
-
-
-
